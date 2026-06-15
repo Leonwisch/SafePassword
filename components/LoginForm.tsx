@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 const LoginForm: React.FC = () => {
   const [username, setUsername] = useState<string>('');
@@ -8,19 +9,16 @@ const LoginForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login versucht:', { username, password });
     alert('Login versucht (Backend-Logik fehlt noch)');
   };
 
   return (
-    <div className="bg-zinc-50 p-8 rounded-3xl border border-gray-100 shadow-lg w-full max-w-lg flex flex-col">
+    <div className="bg-zinc-50 p-8 rounded-3xl border border-zinc-100 shadow-md w-full max-w-md flex flex-col">
       <h2 className="text-4xl font-bold mb-6 self-start text-zinc-950">Login</h2>
 
       <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6">
         <div className="flex flex-col gap-1.5 w-full">
-          <label htmlFor="username" className="text-sm font-medium text-zinc-700">
-            Username
-          </label>
+          <label htmlFor="username" className="text-sm font-medium text-zinc-700">Username</label>
           <input
             type="text"
             id="username"
@@ -32,9 +30,7 @@ const LoginForm: React.FC = () => {
         </div>
 
         <div className="flex flex-col gap-1.5 w-full">
-          <label htmlFor="password" className="text-sm font-medium text-zinc-700">
-            Passwort
-          </label>
+          <label htmlFor="password" className="text-sm font-medium text-zinc-700">Master-Passwort</label>
           <input
             type="password"
             id="password"
@@ -52,6 +48,13 @@ const LoginForm: React.FC = () => {
           Login
         </button>
       </form>
+
+      <div className="mt-6 text-center text-sm text-zinc-600">
+        Noch keinen Account?{' '}
+        <Link href="/register" className="font-semibold text-zinc-900 hover:underline">
+          Hier registrieren
+        </Link>
+      </div>
     </div>
   );
 };
