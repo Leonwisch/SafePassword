@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+  // Falls du den generierten Client zwingend in src/ brauchst, 
+  // entferne die '//' in der nächsten Zeile:
+  // output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id             String          @id @default(uuid())
+  email          String          @unique
+  masterHash     String          // Das unumkehrbar gehashte Master-Passwort für den Login
+  categories     Category[]
+  passwordEntries PasswordEntry[]
+  createdAt      DateTime        @default(now())
+}
+
+model Category {
+  id        String          @id @default(uuid())
+  name      String          // z.B. "Schule", "Arbeit", "Privat"
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  entries   PasswordEntry[]
+
+  @@unique([name, userId]) // Ein Nutzer darf keine doppelten Kategorienamen haben
+}
+
+model PasswordEntry {
+  id              String   @id @default(uuid())
+  title           String   // Name der Website oder des Dienstes
+  username        String   // Der Benutzername für den Dienst (Klartext oder verschlüsselt)
+  encryptedPassword String // Das mit AES-256-GCM verschlüsselte Passwort (Ciphertext)
+  iv              String   // Der einzigartige Initialisierungsvektor für diesen Eintrag
+  notes           String?  // Optionale Notizen
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId      String
+  category        Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
