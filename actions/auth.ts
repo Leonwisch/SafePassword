@@ -28,3 +28,26 @@ export async function registerUser(email: string, masterPass: string) {
     return { success: false, error: 'Ein unerwarteter Fehler ist aufgetreten.' };
   }
 }
+
+export async function loginUser(email: string, masterPass: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return { success: false, error: 'E-Mail-Adresse oder Passwort ungültig.' };
+    }
+
+    const isPasswordValid = await argon2.verify(user.masterHash, masterPass);
+
+    if (!isPasswordValid) {
+      return { success: false, error: 'E-Mail-Adresse oder Passwort ungültig.' };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Loginfehler:', error);
+    return { success: false, error: 'Ein unerwarteter Fehler ist aufgetreten.' };
+  }
+}
