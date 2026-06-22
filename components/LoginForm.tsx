@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { loginUser } from '../actions/auth'; 
+import { loginUser } from '../actions/auth';
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -20,7 +20,9 @@ const LoginForm: React.FC = () => {
     const result = await loginUser(email, password);
 
     if (result.success) {
-      router.push('/dashboard'); 
+      localStorage.setItem('currentUserEmail', email.trim());
+
+      router.push('/dashboard');
     } else {
       setError(result.error || 'Fehler beim Login');
       setIsLoading(false);
@@ -28,7 +30,8 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="bg-zinc-50 p-8 rounded-3xl border border-zinc-100 shadow-md w-full max-w-md flex flex-col">
+    <div className="bg-zinc-50 p-8 rounded-3xl border border-zinc-100 shadow-md w-full max-w-md flex flex-col relative">
+
       <h2 className="text-4xl font-bold mb-6 self-start text-zinc-950">Login</h2>
 
       {error && (
